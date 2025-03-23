@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Recognition App</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <h1>Song Recognition App</h1>
+        <div class="recognition-container">
+            <div class="file-upload-container">
+                <h3>Upload an Audio File</h3>
+                <div class="file-input-wrapper">
+                    <input type="file" id="audioFileInput" accept="audio/*" class="file-input" />
+                    <label for="audioFileInput" class="file-label">Choose Audio File</label>
+                </div>
+                <div class="file-name" id="fileName">No file selected</div>
+                
+                <!-- Progress bar -->
+                <div id="progressContainer" class="progress-container hidden">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+                
+                <div id="status" class="status"></div>
+            </div>
+            
+            <div class="results-container" id="resultsContainer">
+                <div class="results-placeholder">
+                    <p>Upload a file to identify a song</p>
+                </div>
+                <div class="result-card hidden" id="resultCard">
+                    <div class="song-info">
+                        <div id="albumArt" class="album-art"></div>
+                        <div class="song-details">
+                            <h2 id="songTitle">Song Title</h2>
+                            <p id="artistName">Artist</p>
+                            <p id="albumName">Album</p>
+                            <p id="releaseDate">Release Date</p>
+                        </div>
+                    </div>
+                    <div class="links" id="songLinks">
+                        <!-- Links will be added dynamically -->
+                    </div>
+                </div>
+                <div class="error-message hidden" id="errorMessage">
+                    <p>No song was recognized. Try again with a different audio file.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html> 

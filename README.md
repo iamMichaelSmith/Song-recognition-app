@@ -1,85 +1,89 @@
-# Song Recognition App
+# Studio Song Recognition
 
-A web application that allows you to identify songs by uploading audio files using the AudD Music Recognition API.
-
-![Song Recognition App](https://i.imgur.com/YourScreenshot.png)
+A web application for recognizing songs from audio files, with support for both single file and folder batch processing.
 
 ## Features
 
-- **Audio File Upload**: Upload audio files to identify songs
-- **Song Information Display**: View detailed information about the identified song, including:
-  - Title and artist
-  - Album name
-  - Release date
-  - Album artwork
-- **Streaming Service Links**: Direct links to the identified song on popular streaming platforms:
-  - Apple Music
-  - Spotify
-  - Deezer
+- Single file song recognition
+- Folder batch processing for multiple MP3 files
+- Drag and drop support
+- Progress tracking for batch operations
+- Links to streaming services (Apple Music, Spotify, Deezer)
+- Local storage for settings and recent results
+- Dark mode interface
+
+## Setup
+
+1. Download all files to a local directory:
+   - `index.html`
+   - `app.js`
+   - `styles.css`
+
+2. Run a local server:
+   ```bash
+   # Using Python (recommended)
+   python -m http.server 8000
+   ```
+
+3. Open in your browser:
+   - Go to: http://localhost:8000
+
+## Usage
+
+### Single File Upload
+1. Click "Choose File" or drag and drop an audio file
+2. Wait for recognition process
+3. View song details and streaming links
+
+### Folder Scan
+1. Click "Scan Folder"
+2. Select a folder containing MP3 files
+3. Wait for batch processing to complete
+4. View results for all processed files
+
+### File Requirements
+- Maximum file size: 10MB
+- Supported formats: MP3 and other audio formats
+- For folder scan: MP3 files only
+
+## Local Storage
+
+The application saves:
+- Last used folder location
+- Recent recognition results (last 10)
+- Application settings
+
+## API Usage
+
+This application uses the AudD API for song recognition. The API token is included in the code.
+
+## Project Structure
+```
+song-recognition/
+├── index.html      # Main HTML file
+├── styles.css      # Styling
+├── app.js         # Application logic
+└── README.md      # Documentation
+```
 
 ## How to Use
-
-1. Click the "Choose File" button to select an audio file from your device
-   - Supported formats: MP3, WAV, M4A, and others
-   - Maximum file size: 10MB
-2. Once a file is selected, click the "Identify Song" button
-3. Wait for the app to process your file and receive results
-4. View the identified song details or error message if no match is found
+1. Open `index.html` in your web browser
+2. Either:
+   - Drag and drop an audio file onto the upload area
+   - Click "Choose File" to select an audio file
+3. Wait for the app to process your file
+4. View the identified song details or error message
 
 ## Technical Details
-
 - Built with vanilla JavaScript, HTML, and CSS
 - Uses the [AudD Music Recognition API](https://audd.io/) for song identification
 - Responsive design that works on both desktop and mobile devices
 
-## Development
-
-To set up the project locally:
-
-1. Clone this repository:
-   ```
-   git clone https://github.com/your-username/song-recognition-app.git
-   ```
-
-2. Open the project directory:
-   ```
-   cd song-recognition-app
-   ```
-
-3. Run the application using one of these methods:
-
-   - **Option 1: Open directly in browser**
-     - Simply open `index.html` in your preferred web browser by double-clicking the file
-
-   - **Option 2: Use a local development server**
-     - Using Python (if installed):
-       ```
-       # Python 3
-       python -m http.server
-       # Python 2
-       python -m SimpleHTTPServer
-       ```
-     - Using Node.js (if installed):
-       ```
-       # Install serve globally (if not already installed)
-       npm install -g serve
-       # Start the server
-       serve
-       ```
-     - Using Visual Studio Code:
-       - Install the "Live Server" extension
-       - Right-click on `index.html` and select "Open with Live Server"
-
-4. Access the application:
-   - If using the direct method, the file will open in your browser
-   - If using a server, access the application at `http://localhost:8000` (or the port indicated in your terminal)
+## Customized Features
+- Studio-inspired color scheme
+- Drag and drop functionality
+- Formatted release dates (MM/DD/YYYY)
+- User-friendly success messages
 
 ## License
-
-MIT
-
-## Credits
-
-- [AudD](https://audd.io/) for the music recognition API
-- Icons from [Remix Icon](https://remixicon.com/)
-- Fonts from Google Fonts 
+MIT 

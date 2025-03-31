@@ -3,22 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Song Recognition App</title>
+    <title>Studio Song Recognition</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
 </head>
 <body>
     <div class="container">
-        <h1>Song Recognition App</h1>
+        <h1>Studio Song Recognition</h1>
+        
+        <!-- Main Recognition Container -->
         <div class="recognition-container">
             <div class="file-upload-container">
-                <h3>Upload an Audio File</h3>
+                <h3>Upload Audio File</h3>
+                <p class="drag-drop-text">Drag and drop an audio file here or click to select</p>
                 <div class="file-input-wrapper">
-                    <input type="file" id="audioFileInput" accept="audio/*" class="file-input" />
-                    <label for="audioFileInput" class="file-label">Choose Audio File</label>
+                    <input type="file" id="audioFileInput" class="file-input" accept="audio/*">
+                    <label for="audioFileInput" class="file-label">Choose File</label>
+                    <button id="scanFolderBtn" class="scan-button">Scan Folder</button>
+                    <input type="file" id="folderInput" webkitdirectory style="display: none;">
                 </div>
-                <div class="file-name" id="fileName">No file selected</div>
+                <p id="fileName" class="file-name">No file selected</p>
                 
                 <!-- Progress bar -->
                 <div id="progressContainer" class="progress-container hidden">

@@ -1,7 +1,7 @@
 /* Base styles */
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #121212;
+    background-color: #2a1f23; /* Dark brown from studio walls */
     color: #e0e0e0;
     line-height: 1.6;
     margin: 0;
@@ -30,17 +30,25 @@ h2 {
 
 /* File upload section */
 .recognition-container {
-    background-color: #1e1e1e;
+    background-color: #3d2830; /* Burgundy tone */
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     padding: 1.5rem;
     margin-bottom: 1.5rem;
-    border: 1px solid #333333;
+    border: 1px solid #4a3238;
 }
 
 .file-upload-container {
     padding: 1.5rem;
     margin-bottom: 1rem;
+    border: 2px dashed #d4c5b9; /* Beige color for drag area */
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.file-upload-container.drag-over {
+    background-color: rgba(212, 197, 185, 0.1);
+    border-color: #e6d5c9;
 }
 
 .file-upload-container h3 {
@@ -56,6 +64,7 @@ h2 {
     align-items: center;
     justify-content: center;
     margin-bottom: 1rem;
+    gap: 1rem;
 }
 
 .file-input {
@@ -67,7 +76,7 @@ h2 {
 }
 
 .file-label {
-    background-color: #7c4dff;
+    background-color: #8b4c55; /* Burgundy accent */
     color: #ffffff;
     border: none;
     border-radius: 8px;
@@ -77,13 +86,13 @@ h2 {
     cursor: pointer;
     transition: all 0.2s ease;
     display: inline-block;
-    box-shadow: 0 4px 12px rgba(124, 77, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(139, 76, 85, 0.3);
 }
 
 .file-label:hover {
-    background-color: #9069fd;
+    background-color: #a25964;
     transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(124, 77, 255, 0.4);
+    box-shadow: 0 6px 14px rgba(139, 76, 85, 0.4);
 }
 
 .file-name {
@@ -96,7 +105,7 @@ h2 {
 /* Progress bar */
 .progress-container {
     height: 6px;
-    background-color: #333333;
+    background-color: #4a3238;
     border-radius: 3px;
     margin: 1.5rem 0;
     overflow: hidden;
@@ -105,7 +114,7 @@ h2 {
 
 .progress-bar {
     height: 100%;
-    background-color: #7c4dff;
+    background-color: #8b4c55;
     border-radius: 3px;
     width: 0;
     transition: width 0.3s ease;
@@ -133,11 +142,11 @@ h2 {
 }
 
 .result-card {
-    background-color: #242424;
+    background-color: #3d2830;
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border: 1px solid #333333;
+    border: 1px solid #4a3238;
 }
 
 .song-info {
@@ -183,7 +192,7 @@ h2 {
 
 .links a {
     display: inline-block;
-    background-color: #333333;
+    background-color: #4a3238;
     color: #ffffff;
     text-decoration: none;
     padding: 0.6rem 1.2rem;
@@ -194,7 +203,7 @@ h2 {
 }
 
 .links a:hover {
-    background-color: #444444;
+    background-color: #5a3e44;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
@@ -225,4 +234,87 @@ h2 {
     .links {
         justify-content: center;
     }
+}
+
+.drag-drop-text {
+    text-align: center;
+    color: #d4c5b9;
+    margin: 0 auto 1.5rem;
+    font-size: 1rem;
+    max-width: 80%;
+    line-height: 1.4;
+}
+
+/* Scan button */
+.scan-button {
+    background-color: #8b4c55;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(139, 76, 85, 0.3);
+}
+
+.scan-button:hover {
+    background-color: #a25964;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(139, 76, 85, 0.4);
+}
+
+/* Batch processing results */
+.batch-results {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.batch-result-item {
+    background-color: #3d2830;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #4a3238;
+}
+
+.batch-result-item .result-header {
+    margin-bottom: 1rem;
+}
+
+.batch-result-item .result-header h3 {
+    color: #ffffff;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+}
+
+.batch-result-item .result-header p {
+    color: #b0b0b0;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.batch-result-item .result-details {
+    color: #b0b0b0;
+    font-size: 0.9rem;
+}
+
+.batch-result-item .result-details p {
+    margin: 0.3rem 0;
+}
+
+.error-item {
+    background-color: rgba(255, 107, 107, 0.1);
+    border: 1px solid #ff6b6b;
+    color: #ff6b6b;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.result-header.error h3 {
+    color: #ff6b6b !important;
 } 

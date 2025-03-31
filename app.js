@@ -16,17 +16,122 @@ const songLinks = document.getElementById('songLinks');
 
 // File Upload Elements
 const audioFileInput = document.getElementById('audioFileInput');
+const folderInput = document.getElementById('folderInput');
+const scanFolderBtn = document.getElementById('scanFolderBtn');
 const fileName = document.getElementById('fileName');
 const progressBar = document.getElementById('progressBar');
 const progressContainer = document.getElementById('progressContainer');
+const fileUploadContainer = document.querySelector('.file-upload-container');
+
+// Local Storage Keys
+const STORAGE_KEYS = {
+    LAST_FOLDER: 'lastFolder',
+    RECENT_RESULTS: 'recentResults',
+    SETTINGS: 'appSettings'
+};
+
+// App Settings with defaults
+let appSettings = {
+    maxRecentResults: 10,
+    autoStartRecognition: true,
+    lastFolder: null
+};
 
 // File upload variables
 let selectedFile = null;
+let processingQueue = [];
 
 // Initialize the app
 function init() {
-    // File upload event listener
+    // Load settings from local storage
+    loadSettings();
+    
+    // File upload event listeners
     audioFileInput.addEventListener('change', handleFileSelection);
+    folderInput.addEventListener('change', handleFolderSelection);
+    scanFolderBtn.addEventListener('click', () => folderInput.click());
+    
+    // Drag and drop event listeners
+    fileUploadContainer.addEventListener('dragover', handleDragOver);
+    fileUploadContainer.addEventListener('dragleave', handleDragLeave);
+    fileUploadContainer.addEventListener('drop', handleDrop);
+    
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        fileUploadContainer.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+}
+
+// Load settings from local storage
+function loadSettings() {
+    try {
+        const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+        if (savedSettings) {
+            appSettings = { ...appSettings, ...JSON.parse(savedSettings) };
+        }
+        
+        // Restore last folder if it exists
+        if (appSettings.lastFolder) {
+            folderInput.value = appSettings.lastFolder;
+        }
+    } catch (error) {
+        console.error('Error loading settings:', error);
+    }
+}
+
+// Save settings to local storage
+function saveSettings() {
+    try {
+        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(appSettings));
+    } catch (error) {
+        console.error('Error saving settings:', error);
+    }
+}
+
+// Save result to recent results
+function saveToRecents(result) {
+    try {
+        let recentResults = JSON.parse(localStorage.getItem(STORAGE_KEYS.RECENT_RESULTS) || '[]');
+        recentResults.unshift({
+            timestamp: new Date().toISOString(),
+            result
+        });
+        
+        // Keep only the latest results based on settings
+        recentResults = recentResults.slice(0, appSettings.maxRecentResults);
+        localStorage.setItem(STORAGE_KEYS.RECENT_RESULTS, JSON.stringify(recentResults));
+    } catch (error) {
+        console.error('Error saving to recents:', error);
+    }
+}
+
+// Prevent default drag behaviors
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+// Handle drag over
+function handleDragOver(e) {
+    fileUploadContainer.classList.add('drag-over');
+}
+
+// Handle drag leave
+function handleDragLeave(e) {
+    fileUploadContainer.classList.remove('drag-over');
+}
+
+// Handle drop
+function handleDrop(e) {
+    fileUploadContainer.classList.remove('drag-over');
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    
+    if (files.length > 0) {
+        audioFileInput.files = files;
+        handleFileSelection({ target: audioFileInput });
+    }
 }
 
 // Handle file selection
@@ -52,6 +157,106 @@ function handleFileSelection(event) {
         fileName.textContent = 'No file selected';
         statusElement.textContent = '';
     }
+}
+
+// Handle folder selection
+async function handleFolderSelection(event) {
+    const files = Array.from(event.target.files).filter(file => 
+        file.type === 'audio/mpeg' || file.name.toLowerCase().endsWith('.mp3')
+    );
+    
+    if (files.length === 0) {
+        statusElement.textContent = 'No MP3 files found in selected folder';
+        return;
+    }
+
+    // Save the last used folder path
+    appSettings.lastFolder = event.target.value;
+    saveSettings();
+
+    // Clear previous results
+    resultsContainer.innerHTML = '';
+    const batchContainer = document.createElement('div');
+    batchContainer.className = 'batch-results';
+    resultsContainer.appendChild(batchContainer);
+
+    statusElement.textContent = `Found ${files.length} MP3 files. Starting processing...`;
+    progressContainer.classList.remove('hidden');
+    progressBar.style.width = '0%';
+    
+    // Process files sequentially
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        statusElement.textContent = `Processing file ${i + 1} of ${files.length}: ${file.name}`;
+        
+        try {
+            const result = await processFile(file);
+            const resultElement = createResultElement(result, file.name);
+            batchContainer.appendChild(resultElement);
+            
+            // Save successful results
+            if (result.status === 'success' && result.result) {
+                saveToRecents(result.result);
+            }
+        } catch (error) {
+            console.error('Error processing file:', file.name, error);
+            const errorElement = document.createElement('div');
+            errorElement.className = 'error-item';
+            errorElement.textContent = `Failed to process ${file.name}: ${error.message}`;
+            batchContainer.appendChild(errorElement);
+        }
+        
+        // Update progress
+        progressBar.style.width = `${((i + 1) / files.length) * 100}%`;
+    }
+    
+    statusElement.textContent = 'Finished processing all files';
+}
+
+// Process a single file
+async function processFile(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('api_token', API_TOKEN);
+    formData.append('return', 'apple_music,spotify,deezer');
+    
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        body: formData
+    });
+    
+    const data = await response.json();
+    return data;
+}
+
+// Create result element for batch processing
+function createResultElement(data, fileName) {
+    const element = document.createElement('div');
+    element.className = 'batch-result-item';
+    
+    if (data.status === 'success' && data.result) {
+        const result = data.result;
+        element.innerHTML = `
+            <div class="result-header">
+                <h3>${result.title || 'Unknown Title'}</h3>
+                <p>${result.artist || 'Unknown Artist'}</p>
+            </div>
+            <div class="result-details">
+                <p>File: ${fileName}</p>
+                <p>Album: ${result.album || 'Unknown Album'}</p>
+                ${result.release_date ? `<p>Released: ${formatDate(result.release_date)}</p>` : ''}
+            </div>
+        `;
+    } else {
+        element.innerHTML = `
+            <div class="result-header error">
+                <h3>Recognition Failed</h3>
+                <p>File: ${fileName}</p>
+            </div>
+        `;
+    }
+    
+    return element;
 }
 
 // Handle file upload and recognition
@@ -147,7 +352,7 @@ function processResponse(data) {
     if (data.status === 'success' && data.result) {
         // Display song information
         displaySongInfo(data.result);
-        statusElement.textContent = 'Song identified!';
+        statusElement.textContent = 'Found it! 👍';
     } else {
         // Show error message
         console.log('No song identified or error:', data);
@@ -156,13 +361,21 @@ function processResponse(data) {
     }
 }
 
+// Format date to MM/DD/YYYY
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString; // Return original if invalid
+    return `Release Date: ${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+}
+
 // Display the song information
 function displaySongInfo(result) {
     // Set basic song info
     songTitle.textContent = result.title || 'Unknown Title';
     artistName.textContent = result.artist || 'Unknown Artist';
     albumName.textContent = result.album || 'Unknown Album';
-    releaseDate.textContent = result.release_date || '';
+    releaseDate.textContent = formatDate(result.release_date);
     
     // Set album art if available
     if (result.apple_music && result.apple_music.artwork_url) {

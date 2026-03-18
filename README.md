@@ -2,6 +2,22 @@
 
 A web application for recognizing songs from audio files, with support for both single file and folder batch processing.
 
+## Hiring manager snapshot
+
+This repo is best framed as a focused utility prototype:
+
+- solves a real studio task instead of recreating a generic demo app
+- keeps setup lightweight so a reviewer can understand it quickly
+- shows practical UX thinking around batch processing, drag-and-drop, and result review
+- complements stronger full-stack repos by demonstrating breadth in music-tool product ideas
+
+## Local verification status
+
+Validated in this workspace during the employment-readiness pass:
+
+- `python .\\tests\\smoke.py` ✅
+- Proof artifact: `docs/LOCAL_PROOF.md`
+
 ## Features
 
 - Single file song recognition
@@ -19,13 +35,19 @@ A web application for recognizing songs from audio files, with support for both 
    - `app.js`
    - `styles.css`
 
-2. Run a local server:
+2. Create local runtime config:
+   ```powershell
+   Copy-Item config.example.js config.js
+   ```
+   Then add your AudD API token.
+
+3. Run a local server:
    ```bash
    # Using Python (recommended)
    python -m http.server 8000
    ```
 
-3. Open in your browser:
+4. Open in your browser:
    - Go to: http://localhost:8000
 
 ## Usage
@@ -55,7 +77,13 @@ The application saves:
 
 ## API Usage
 
-This application uses the AudD API for song recognition. The API token is included in the code.
+This application uses the AudD API for song recognition.
+
+1. Copy `config.example.js` to `config.js`
+2. Add your AudD API token to `window.APP_CONFIG.AUDD_API_TOKEN`
+3. Keep `config.js` local and out of source control if you use a real token
+
+The app now fails safely with a clear message when the token is missing instead of shipping a hardcoded credential.
 
 ## Project Structure
 ```

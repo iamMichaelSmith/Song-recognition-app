@@ -1,6 +1,6 @@
-// AudD API token
-const API_TOKEN = 'e460f49f21abb45069803db0a41a4693';
-const API_URL = 'https://api.audd.io/';
+const runtimeConfig = window.APP_CONFIG || {};
+const API_TOKEN = runtimeConfig.AUDD_API_TOKEN || '';
+const API_URL = runtimeConfig.AUDD_API_URL || 'https://api.audd.io/';
 
 // DOM Elements
 const statusElement = document.getElementById('status');
@@ -170,6 +170,11 @@ async function handleFolderSelection(event) {
         return;
     }
 
+    if (!hasApiToken()) {
+        showMissingTokenError();
+        return;
+    }
+
     // Save the last used folder path
     appSettings.lastFolder = event.target.value;
     saveSettings();
@@ -213,8 +218,21 @@ async function handleFolderSelection(event) {
     statusElement.textContent = 'Finished processing all files';
 }
 
+function hasApiToken() {
+    return Boolean(API_TOKEN && API_TOKEN.trim());
+}
+
+function showMissingTokenError() {
+    statusElement.textContent = 'Missing AudD API token. Add it to config.js before recognizing songs.';
+    statusElement.style.color = '#ff6b6b';
+}
+
 // Process a single file
 async function processFile(file) {
+    if (!hasApiToken()) {
+        throw new Error('Missing AudD API token. Add it to config.js before recognizing songs.');
+    }
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('api_token', API_TOKEN);
@@ -262,6 +280,13 @@ function createResultElement(data, fileName) {
 // Handle file upload and recognition
 async function handleFileUpload() {
     if (!selectedFile) {
+        return;
+    }
+
+    if (!hasApiToken()) {
+        resetUI();
+        showMissingTokenError();
+        showError();
         return;
     }
     
